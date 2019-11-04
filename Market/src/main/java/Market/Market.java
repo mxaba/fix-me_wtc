@@ -14,10 +14,10 @@ import org.json.JSONObject;
 
 public class Market {
     public static void main(String[] args) throws Exception {
-        System.out.println("Starting the market");
+        System.out.println("Starting the market at poort 5001");
 
         AsynchronousSocketChannel   channel = AsynchronousSocketChannel.open();
-        SocketAddress   serverAddr = new InetSocketAddress("localhost", 8181);
+        SocketAddress   serverAddr = new InetSocketAddress("localhost", 5001);
         Future<Void>    result = channel.connect(serverAddr);
         result.get();
         System.out.println("Connected");
@@ -50,11 +50,11 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
             attach.buffer.get(bytes);
             Charset cs = Charset.forName("UTF-8");
             String  message = new String(bytes, cs);
-            //System.out.format("Server responded: " + message);
+            System.out.format("Server responded: " + message);
             if(message.length() > 0) {
                 // get the ID from the charBuffer written to the channel
                 if(message.charAt(1) == 'I') {
-                    //System.out.println(message);
+                    System.out.println(message);
                     String      messageID = message.replaceAll("[^0-9]", "");
                     Integer     id = Integer.parseInt(messageID);
                     attach.ID = id;
@@ -89,7 +89,7 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
                         // get API data from json string
                         String apiData = getMarketData(instrument);
                         if(apiData.length() > 1) {
-                            //System.out.println(apiData);
+                            System.out.println(apiData);
                             JSONObject  json = new JSONObject(apiData);
                             // Price High
                             Number      mPriceHigh = json.getNumber("week52High");
@@ -115,12 +115,12 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
 
                     // Construct message
                     String  marketMessage = "";
-                    marketMessage += brokerID + "|" + attach.ID + "|";
-                    marketMessage += status + "|";
-                    marketMessage += action + "|";
-                    marketMessage += instrument + "|";
-                    marketMessage += price + "|";
-                    marketMessage += quantity + "|";
+                    marketMessage += brokerID + " | " + attach.ID + " | ";
+                    marketMessage += status + " | ";
+                    marketMessage += action + " | ";
+                    marketMessage += instrument + " | ";
+                    marketMessage += price + " | ";
+                    marketMessage += quantity + " | ";
 
                     // calculate checksum
                     int     checksum = 0;
@@ -175,7 +175,7 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String      output;
-        //System.out.println("Output from server.....");
+        System.out.println("Output from server.....");
         StringBuffer    content = new StringBuffer();
         while ((output = in.readLine()) != null) {
             content.append(output);
@@ -186,7 +186,6 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
         return content.toString();
     }
 }
-
 // Market hold business logic
 // Receives messages from Broker...
 // Replies with... Executed | Rejected

@@ -12,10 +12,10 @@ import java.util.concurrent.Future;
 
 public class Broker {
     public static void main(String[] args) throws Exception {
-        System.out.println("Starting the broker");
+        System.out.println("Starting the broker port 5000");
 
         AsynchronousSocketChannel   channel = AsynchronousSocketChannel.open();
-        SocketAddress   serverAddr = new InetSocketAddress("localhost", 8080);
+        SocketAddress   serverAddr = new InetSocketAddress("localhost", 5000);
         Future<Void>    result = channel.connect(serverAddr);
         result.get();
         System.out.println("Connected");
@@ -52,7 +52,7 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
             if(message.length() > 0) {
                 // get the ID from the charBuffer written to the channel
                 if (message.charAt(1) == 'I') {
-                    //System.out.println(message);
+                    System.out.println(message);
                     String messageID = message.replaceAll("[^0-9]", "");
                     Integer id = Integer.parseInt(messageID);
                     attach.ID = id;
@@ -107,7 +107,7 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
                 if(MID < 543210 || MID == id) {
                     System.out.println("Invalid input");
                 } else {
-                    message += Integer.toString(MID) + "|" + id + "|";
+                    message += Integer.toString(MID) + " | " + id + " | ";
                     validInput = true;
                 }
             } catch (InputMismatchException e) {
@@ -143,7 +143,7 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
         try {
             Scanner     scanner = new Scanner(System.in);
 
-            message += scanner.nextLine().trim() + "|";
+            message += scanner.nextLine().trim() + " | ";
         } catch (InputMismatchException e) {
             System.out.println("Invalid input --> You have not entered a valid instrument");
         }
@@ -159,7 +159,7 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
                 if(price < 1) {
                     System.out.println("Invalid input");
                 } else {
-                    message += Integer.toString(price) + "|";
+                    message += Integer.toString(price) + " | ";
                     validInput = true;
                 }
             } catch (InputMismatchException e) {
@@ -179,7 +179,7 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
                 if(quantity < 1) {
                     System.out.println("Invalid input");
                 } else {
-                    message += Integer.toString(quantity) + "|";
+                    message += Integer.toString(quantity) + " | ";
                     validInput = true;
                 }
             } catch (InputMismatchException e) {

@@ -17,8 +17,8 @@ public class Router {
     private static Integer  IDcurr;
     private static HashMap<Integer, Attachment>  routingTable = new HashMap<Integer, Attachment>();
     private static String   host = "localhost";
-    private static int      brokerPort = 8080;
-    private static int      marketPort = 8181;
+    private static int      brokerPort = 5000;
+    private static int      marketPort = 5001;
     // store sockets in some sort of list of ConnectionAttachments
 
     // main function
@@ -86,7 +86,7 @@ public class Router {
                 newAttach.connectionType = "Broker";
 
                 routingTable.put(newAttach.ID, newAttach);
-                //System.out.println(newAttach.ID + " connected");
+                System.out.println(newAttach.ID + " connected");
 
                 // write ID to buffer to read ID in instance
                 CharBuffer charBuffer = newAttach.buffer.asCharBuffer();
@@ -128,7 +128,7 @@ public class Router {
                 newAttach.connectionType = "Market";
 
                 routingTable.put(newAttach.ID, newAttach);
-                //System.out.println(newAttach.ID + " connected");
+                System.out.println(newAttach.ID + " connected");
 
                 // write ID to buffer to read ID in instance
                 CharBuffer charBuffer = newAttach.buffer.asCharBuffer();
@@ -161,7 +161,7 @@ public class Router {
     }
 
     private static Integer      checkMessage(String message) {
-        //System.out.println("init message: " + message);
+        System.out.println("init message: " + message);
         String[]    messageData = message.split("\\|");
         int         checksumTotal = Integer.parseInt(messageData[messageData.length - 1]);
 
@@ -210,12 +210,12 @@ public class Router {
                     // get attachment id that needs to receive a message
                     // find id in message
                     // sendToID|fromID|BUY/SELL|SYMBOL|PRICE|QUANTITY|CHECKSUM
-                    // message example = 1001|1000|buy|aapl|12|12|1955
+                    // message example = 1008|1200|sell|akm|12|12|1955
                     // create a new attachment from attachment found
                     Attachment  send = getAttachment(check);
                     if(send.ID == null || (send.connectionType.equals("Broker") && attach.connectionType.equals("Broker")) || (send.connectionType.equals("Market") && attach.connectionType.equals("Market"))) {
                         send = attach;
-                        //System.out.println("SEND ID: " + send.ID);
+                        System.out.println("SENDING ID: " + send.ID);
                     }
                     System.out.format("Client at %s says: %s%n", attach.clientAddress, message);
                     send.buffer.clear();
@@ -225,7 +225,7 @@ public class Router {
                     attach.isRead = false;
                     attach.buffer.rewind();
                     // send message to broker... using broker ID... from router table
-                    //System.out.println("Sending to ID: " + send.ID + " with message " + message);
+                    System.out.println("Sending to ID: " + send.ID + " with message " + message);
                     send.clientChannel.write(send.buffer, send, this);
                 }
             } else {
@@ -242,7 +242,5 @@ public class Router {
         }
     }
 }
-
-
-// router opens connections for Brokers and Markets on specific Ports
+// router opens connections for Brokers and Markets on specific Ports 5000 and 5001
 // it then relays messages between the two sockets
