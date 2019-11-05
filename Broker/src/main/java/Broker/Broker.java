@@ -52,7 +52,8 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
             if(message.length() > 0) {
                 // get the ID from the charBuffer written to the channel
                 if (message.charAt(1) == 'I') {
-                    //System.out.println(message);
+                    System.out.println(message);
+                    System.out.println("ifikile");
                     String messageID = message.replaceAll("[^0-9]", "");
                     Integer id = Integer.parseInt(messageID);
                     attach.ID = id;

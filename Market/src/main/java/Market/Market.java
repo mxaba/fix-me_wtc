@@ -175,7 +175,7 @@ class ReadWriteHandler implements CompletionHandler<Integer, Attachment> {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String      output;
-        //System.out.println("Output from server.....");
+        System.out.println("Output from server.....");
         StringBuffer    content = new StringBuffer();
         while ((output = in.readLine()) != null) {
             content.append(output);
